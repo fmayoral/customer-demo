@@ -1,0 +1,9 @@
+# build files & libs
+**/target
+
+# project files
+**/.idea
+*.iml
+
+# logs
+*.log

@@ -1,0 +1,17 @@
+INSERT INTO CUSTOMER (FIRST_NAME, MIDDLE_NAME, LAST_NAME, PHONE, ADDRESS, EMAIL, STATUS) VALUES ('Fernando', 'German', 'Mayoral', '123-4567', '123 Fake Street', 'fernando@mayoral.dev','CURRENT')
+INSERT INTO NOTE (TEXT, CUSTOMER_ID) VALUES ('This is a customer', 1)
+
+INSERT INTO CUSTOMER (FIRST_NAME, MIDDLE_NAME, LAST_NAME, PHONE, ADDRESS, EMAIL, STATUS) VALUES ('John', 'T', 'Doe', '123-4568', '124 Fake Street', 'john@doe.dev','NON_ACTIVE')
+INSERT INTO NOTE (TEXT, CUSTOMER_ID) VALUES ('This is not a customer anymore', 2)
+
+INSERT INTO CUSTOMER (FIRST_NAME, MIDDLE_NAME, LAST_NAME, PHONE, ADDRESS, EMAIL, STATUS) VALUES ('Douglas', 'R', 'Adams', '123-4569', '125 Fake Street', 'douglas@adams.dev','PROSPECTIVE')
+INSERT INTO NOTE (TEXT, CUSTOMER_ID) VALUES ('This could be a customer', 3)
+
+INSERT INTO CUSTOMER (FIRST_NAME, LAST_NAME, PHONE, ADDRESS, EMAIL, STATUS) VALUES ('Walter', 'White', '123-2345', '123 Some Street', 'walter@white.dev','CURRENT')
+INSERT INTO NOTE (TEXT, CUSTOMER_ID) VALUES ('This is a customer', 4)
+
+INSERT INTO CUSTOMER (FIRST_NAME, LAST_NAME, PHONE, ADDRESS, EMAIL, STATUS) VALUES ('Jesse', 'Pinkman', '234-4568', '124 Another Street', 'jesse@pinkman.dev','NON_ACTIVE')
+INSERT INTO NOTE (TEXT, CUSTOMER_ID) VALUES ('This is not a customer anymore', 5)
+
+INSERT INTO CUSTOMER (FIRST_NAME, LAST_NAME, PHONE, ADDRESS, EMAIL, STATUS) VALUES ('Saul', 'Goodman', '643-2345', '125 Real Street', 'saul@goodman.dev','PROSPECTIVE')
+INSERT INTO NOTE (TEXT, CUSTOMER_ID) VALUES ('This could be a customer', 6)

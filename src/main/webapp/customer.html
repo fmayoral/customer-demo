@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <title>Customer management - details</title>
+</head>
+<body>
+<div class="container">
+    <div id="alert_placeholder"></div>
+    <h1>Customer details</h1>
+
+    <div class="card-body">
+        <h5 class="card-title">full name</h5>
+        <p id="fullName" class="card-text"></p>
+    </div>
+
+    <div class="card-body">
+        <h5 class="card-title">contact details</h5>
+        <p id="contactDetails" class="card-text"></p>
+    </div>
+
+    <div class="card-body">
+        <h5 class="card-title">status</h5>
+        <p id="status" class="card-text">
+            <input type="radio" name="status" value="CURRENT"> current<br>
+            <input type="radio" name="status" value="PROSPECTIVE"> prospective<br>
+            <input type="radio" name="status" value="NON_ACTIVE"> non-active
+        </p>
+    </div>
+
+    <h5>notes</h5>
+    <div id="noteList" class="card">
+
+    </div>
+    <form id="noteForm">
+        <div class="form-group">
+            <input type="hidden" id="id" name="id">
+            <input type="text" class="form-control" id="note" name="text" placeholder="note text">
+        </div>
+        <button type="submit" id="addNote" class="btn btn-primary">add</button>
+    </form>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script>
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+
+    var basePath = 'rest/customers/'+ getUrlParameter("id");
+
+    var selectRadioButton = function selectRadioButton(value) {
+      $("#status > input[name='status'][value='"+value+"']").prop('checked', true);
+    };
+
+    alertTimeout = function alertTimeout(wait){
+        setTimeout(function(){
+            $('#alert_placeholder').children('.alert:first-child').remove();
+        }, wait);
+    };
+
+    error_alert = function(message) {
+        $('#alert_placeholder').append('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button>'+ message +'</div>');
+        alertTimeout(3000);
+    };
+    success_alert = function(message) {
+        $('#alert_placeholder').append('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>'+ message +'</div>');
+        alertTimeout(3000);
+    };
+
+    addNote = function(message){
+        $("#noteList").append('<div id="'+message.id+'" class="card-body">'+message.text+'</div>');
+    }
+
+    addNotes = function(notes){
+        $("#noteList").empty();
+        notes.sort(function(a, b) {
+            return (a.id - b.id);
+        }).forEach(function(e){
+            addNote(e);
+        });
+    }
+
+    s = function (value) {
+        return (value == null) ? "" : value
+    }
+
+    refreshNotes = function(){
+        $.ajax({
+            "url": basePath,
+            success: function(data){
+                addNotes(data.notes);
+             }
+        });
+    };
+
+    // populate data
+    $(document).ready(function(){
+        $.ajax({
+            "url": basePath,
+            success: function(data){
+                $("#fullName").append(s(data.firstName)+ " " + s(data.middleName) + " " + s(data.lastName));
+                $("#contactDetails").append(data.contactDetails.phone);
+                $("#contactDetails").append("<br>");
+                $("#contactDetails").append(data.contactDetails.address);
+                $("#contactDetails").append("<br>");
+                $("#contactDetails").append(data.contactDetails.email);
+                selectRadioButton(data.status);
+                addNotes(data.notes);
+             }
+        });
+
+        // update status
+        $('#status > input[type=radio][name=status]').change(function() {
+            $.ajax({
+                "url": basePath,
+                "type": 'PUT',
+                "contentType": 'application/json',
+                "data": '{"status":"'+this.value+'"}',
+                success: function(data){
+                    success_alert("status updated");
+                 },
+                 error: function(data){
+                    error_alert("failed to update status");
+                 }
+            });
+        });
+
+        $("#addNote").on('click', function(event){
+            event.preventDefault();
+            $.ajax({
+                "url": basePath + "/note",
+                "type": 'PUT',
+                "contentType": 'application/json',
+                "data": '{"text":"'+$("#note").val()+'"}',
+                success : function(result) {
+                    success_alert("message added");
+                    $("#note").val("");
+                    refreshNotes();
+
+                },
+                error: function() {
+                    error_alert("failed to add note");
+                }
+                })
+        });
+
+    })
+</script>
+</body>
+</html>
